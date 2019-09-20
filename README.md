@@ -14,10 +14,11 @@ yarn add node-webrtc-audio-source wrtc
 
 ```js
 import { nonstandard } from 'wrtc'
-import rtcAudioSource from 'node-webrtc-audio-source'
+import RTCAudioSource from 'node-webrtc-audio-source'
 
 const { RTCAudioSink } = nonstandard
 
+const rtcAudioSource  = new RTCAudioSource()
 const track = rtcAudioSource.createTrack()
 const rtcAudioSink = new RTCAudioSink(track)
 
