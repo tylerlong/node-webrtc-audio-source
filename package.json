@@ -1,6 +1,6 @@
 {
   "name": "node-webrtc-audio-source",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "main": "dist/index.js",
   "scripts": {
     "release": "babel src --out-dir dist --source-maps",
