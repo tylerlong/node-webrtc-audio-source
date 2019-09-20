@@ -25,4 +25,6 @@ const rtcAudioSink = new RTCAudioSink(track)
 rtcAudioSink.ondata = data => {
   // Do something with the received audio samples.
 }
+rtcAudioSource.start()
+setTimeout(() => rtcAudioSource.stop(), 10000) // stop after 10 seconds
 ```
