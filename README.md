@@ -59,3 +59,8 @@ ffmpeg -f dshow -i audio="MyMic (Realtek Audio)" -ac 1 -ar 48000 -ab 16 -f s16le
 ```
 sox audio.wav -t waveaudio
 ```
+
+## Issues
+
+- Half a second latency: https://docs.microsoft.com/en-us/windows/win32/directshow/setting-audio-capture-properties?redirectedfrom=MSDN
+    - Reduce it to 50ms, but still noticable

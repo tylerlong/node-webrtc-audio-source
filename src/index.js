@@ -7,24 +7,33 @@ class NodeWebRtcAudioSource extends RTCAudioSource {
   constructor () {
     super()
     this.ps = null
+    this.cache = Buffer.alloc(0)
+    this.stopped = false
   }
 
   start () {
-    this.stop()
+    this.stopped = false
     if (process.platform === 'darwin') {
       this.ps = spawn('rec', ['-q', '-b', 16, '-r', 48000, '-e', 'signed', '-c', 1, '-t', 'raw', '--buffer', 1920, '-'])
     } else if (process.platform === 'win32') {
-      this.ps = spawn('ffmpeg', ['-f', 'dshow', '-i', 'audio=MyMic (Realtek Audio)', '-ac', 1, '-ar', 48000, '-ab', 16, '-f', 's16le', '-acodec', 'pcm_s16le', '-bufsize', 480, '-'])
+      this.ps = spawn('ffmpeg', ['-f', 'dshow', '-audio_buffer_size', 50, '-i', 'audio=MyMic (Realtek Audio)',
+        '-ac', 1, '-ar', 48000, '-ab', '16k', '-f', 's16le', '-acodec', 'pcm_s16le', '-'])
     } else {
       throw new Error("Doesn't support this operating system")
     }
+
+    this.ps.stderr.on('data', b => {
+      // console.log(b.toString())
+    })
     this.ps.stdout.on('data', buffer => {
-      const uint8Array = new Uint8Array(buffer)
-      for (let i = 0; i < uint8Array.length; i += 960) {
-        const samples = new Int16Array(uint8Array.slice(i, i + 960).buffer)
-        if (samples.length !== 480) {
-          continue
-        }
+      // console.log(buffer.length, this.cache.length)
+      this.cache = Buffer.concat([this.cache, buffer])
+    })
+    const processData = () => {
+      while (this.cache.length > 960) {
+        const buffer = this.cache.slice(0, 960)
+        this.cache = this.cache.slice(960)
+        const samples = new Int16Array(new Uint8Array(buffer).buffer)
         this.onData({
           bitsPerSample: 16,
           sampleRate: 48000,
@@ -34,11 +43,16 @@ class NodeWebRtcAudioSource extends RTCAudioSource {
           samples
         })
       }
-    })
+      if (!this.stopped) {
+        setTimeout(() => processData(), 10)
+      }
+    }
+    processData()
   }
 
   stop () {
     if (this.ps !== null) {
+      this.stopped = true
       this.ps.kill('SIGTERM')
       this.ps = null
     }

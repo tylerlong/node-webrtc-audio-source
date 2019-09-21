@@ -1,6 +1,6 @@
 {
   "name": "node-webrtc-audio-source",
-  "version": "0.2.5",
+  "version": "0.2.10",
   "license": "MIT",
   "main": "dist/index.js",
   "scripts": {
