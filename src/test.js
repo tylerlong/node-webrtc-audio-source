@@ -5,7 +5,7 @@ import RTCAudioSource from './index'
 
 const { RTCAudioSink } = nonstandard
 
-const audioPath = 'audio.wav'
+const audioPath = 'audio.raw'
 if (fs.existsSync(audioPath)) {
   fs.unlinkSync(audioPath)
 }

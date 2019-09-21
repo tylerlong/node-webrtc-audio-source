@@ -51,7 +51,7 @@ play audio.raw -t raw
 #### record
 
 ```
-sox -q -b 16 -r 48000 -e signed -c 1 -t waveaudio --buffer 1920 -d -
+ffmpeg -f dshow -i audio="MyMic (Realtek Audio)" -ac 1 -ar 48000 -ab 16 -f s16le -acodec pcm_s16le -bufsize 1920 -
 ```
 
 #### play
