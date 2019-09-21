@@ -1,12 +1,15 @@
 {
   "name": "node-webrtc-audio-source",
-  "version": "0.2.11",
+  "version": "0.3.0",
   "license": "MIT",
   "main": "dist/index.js",
   "scripts": {
     "test": "node -r @babel/register src/test.js",
     "release": "babel src --out-dir dist --source-maps",
     "prepublishOnly": "yarn release"
+  },
+  "dependencies": {
+    "command-exists": "^1.2.8"
   },
   "devDependencies": {
     "@babel/cli": "^7.6.0",

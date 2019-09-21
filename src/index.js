@@ -1,5 +1,7 @@
 import { nonstandard } from 'wrtc'
-import { spawn } from 'child_process'
+import { spawn, exec } from 'child_process'
+import { promisify } from 'util'
+import CommandExists from 'command-exists'
 
 const { RTCAudioSource } = nonstandard
 
@@ -11,22 +13,32 @@ class NodeWebRtcAudioSource extends RTCAudioSource {
     this.stopped = false
   }
 
-  start () {
+  async start () {
     this.stopped = false
     if (process.platform === 'darwin') {
+      if (!CommandExists.sync('rec')) {
+        throw new Error('Requires sox, please install sox and try again')
+      }
       this.ps = spawn('rec', ['-q', '-b', 16, '-r', 48000, '-e', 'signed', '-c', 1, '-t', 'raw', '--buffer', 1920, '-'])
     } else if (process.platform === 'win32') {
-      this.ps = spawn('ffmpeg', ['-f', 'dshow', '-audio_buffer_size', 50, '-i', 'audio=MyMic (Realtek Audio)',
+      if (!CommandExists.sync('ffmpeg')) {
+        throw new Error('Requires ffmpeg, please install ffmpeg and try again')
+      }
+      const asyncExec = promisify(exec)
+      let audioDevice
+      try {
+        await asyncExec('ffmpeg -list_devices true -f dshow -i dummy')
+      } catch (e) {
+        const output = e.message
+        const match = output.match(/\[dshow @ [0-9a-zA-Z]+?\] DirectShow audio devices[\r\n]+?\[dshow @ [0-9a-zA-Z]+?\] {2}"(.+?)"/)
+        audioDevice = match[1]
+      }
+      this.ps = spawn('ffmpeg', ['-f', 'dshow', '-audio_buffer_size', 50, '-i', `audio=${audioDevice}`,
         '-ac', 1, '-ar', 48000, '-f', 's16le', '-acodec', 'pcm_s16le', '-'])
     } else {
       throw new Error("Doesn't support this operating system")
     }
-
-    this.ps.stderr.on('data', b => {
-      // console.log(b.toString())
-    })
     this.ps.stdout.on('data', buffer => {
-      // console.log(buffer.length, this.cache.length)
       this.cache = Buffer.concat([this.cache, buffer])
     })
     const processData = () => {
