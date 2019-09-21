@@ -28,3 +28,34 @@ rtcAudioSink.ondata = data => {
 rtcAudioSource.start()
 setTimeout(() => rtcAudioSource.stop(), 10000) // stop after 10 seconds
 ```
+
+
+## How does it work?
+
+### macOS
+
+#### record
+
+```
+rec -q -b 16 -r 48000 -e signed -c 1 -t raw --buffer 1920 -
+```
+
+#### play
+
+```
+play audio.raw -t raw
+```
+
+### Windows
+
+#### record
+
+```
+sox -q -b 16 -r 48000 -e signed -c 1 -t waveaudio --buffer 1920 -d -
+```
+
+#### play
+
+```
+sox audio.wav -t waveaudio
+```
