@@ -34,33 +34,18 @@ setTimeout(() => rtcAudioSource.stop(), 10000) // stop after 10 seconds
 
 ### macOS
 
-#### record
-
 ```
 rec -q -b 16 -r 48000 -e signed -c 1 -t raw --buffer 1920 -
 ```
 
-#### play
-
-```
-play audio.raw -t raw
-```
-
 ### Windows
 
-#### record
-
 ```
-ffmpeg -f dshow -i audio="MyMic (Realtek Audio)" -ac 1 -ar 48000 -ab 16 -f s16le -acodec pcm_s16le -bufsize 1920 -
+ffmpeg -f dshow -audio_buffer_size 50 -i audio="My Microphone Device" -ac 1 -ar 48000 -f s16le -acodec pcm_s16le -
 ```
 
-#### play
+#### How to get list of devices
 
 ```
-sox audio.wav -t waveaudio
+ffmpeg -list_devices true -f dshow -i dummy
 ```
-
-## Issues
-
-- Half a second latency: https://docs.microsoft.com/en-us/windows/win32/directshow/setting-audio-capture-properties?redirectedfrom=MSDN
-    - Reduce it to 50ms, but still noticable
