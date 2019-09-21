@@ -17,7 +17,7 @@ class NodeWebRtcAudioSource extends RTCAudioSource {
       this.ps = spawn('rec', ['-q', '-b', 16, '-r', 48000, '-e', 'signed', '-c', 1, '-t', 'raw', '--buffer', 1920, '-'])
     } else if (process.platform === 'win32') {
       this.ps = spawn('ffmpeg', ['-f', 'dshow', '-audio_buffer_size', 50, '-i', 'audio=MyMic (Realtek Audio)',
-        '-ac', 1, '-ar', 48000, '-ab', '16k', '-f', 's16le', '-acodec', 'pcm_s16le', '-'])
+        '-ac', 1, '-ar', 48000, '-f', 's16le', '-acodec', 'pcm_s16le', '-'])
     } else {
       throw new Error("Doesn't support this operating system")
     }
