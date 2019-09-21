@@ -1,14 +1,7 @@
 import { nonstandard } from 'wrtc'
 import { spawn } from 'child_process'
-// import fs from 'fs'
 
 const { RTCAudioSource } = nonstandard
-
-// const audioPath = 'audio.wav'
-// if (fs.existsSync(audioPath)) {
-//   fs.unlinkSync(audioPath)
-// }
-// const audioStream = fs.createWriteStream(audioPath, { flags: 'a' })
 
 class NodeWebRtcAudioSource extends RTCAudioSource {
   constructor () {
@@ -37,7 +30,6 @@ class NodeWebRtcAudioSource extends RTCAudioSource {
           type: 'data',
           samples
         })
-        // audioStream.write(Buffer.from(samples.buffer))
       }
     })
   }

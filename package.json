@@ -4,6 +4,7 @@
   "license": "MIT",
   "main": "dist/index.js",
   "scripts": {
+    "test": "node -r @babel/register src/test.js",
     "release": "babel src --out-dir dist --source-maps",
     "prepublishOnly": "yarn release"
   },
