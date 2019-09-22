@@ -10,19 +10,20 @@ class NodeWebRtcAudioSource extends RTCAudioSource {
     super()
     this.ps = null
     this.cache = Buffer.alloc(0)
-    this.stopped = true
   }
 
   createTrack () {
     const track = super.createTrack()
-    if (this.stopped) {
+    if (this.ps === null) {
       this.start()
     }
     return track
   }
 
   async start () {
-    this.stopped = false
+    if (this.ps !== null) {
+      this.stop() // stop existing process
+    }
     if (process.platform === 'darwin') {
       if (!CommandExists.sync('rec')) {
         throw new Error('Requires sox, please install sox and try again')
@@ -63,7 +64,7 @@ class NodeWebRtcAudioSource extends RTCAudioSource {
           samples
         })
       }
-      if (!this.stopped) {
+      if (this.ps !== null) {
         setTimeout(() => processData(), 10)
       }
     }
@@ -72,7 +73,6 @@ class NodeWebRtcAudioSource extends RTCAudioSource {
 
   stop () {
     if (this.ps !== null) {
-      this.stopped = true
       this.ps.kill('SIGTERM')
       this.ps = null
     }

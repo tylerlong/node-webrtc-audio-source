@@ -1,6 +1,6 @@
 {
   "name": "node-webrtc-audio-source",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "license": "MIT",
   "main": "dist/index.js",
   "scripts": {
@@ -23,6 +23,6 @@
     "yarn-upgrade-all": "^0.5.2"
   },
   "peerDependencies": {
-    "wrtc": ">=0.3.6"
+    "wrtc": "^0.4.2"
   }
 }
