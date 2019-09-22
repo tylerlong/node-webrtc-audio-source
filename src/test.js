@@ -17,4 +17,3 @@ const rtcAudioSink = new RTCAudioSink(track)
 rtcAudioSink.ondata = data => {
   audioStream.write(Buffer.from(data.samples.buffer))
 }
-rtcAudioSource.start()

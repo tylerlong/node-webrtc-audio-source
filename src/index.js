@@ -10,7 +10,15 @@ class NodeWebRtcAudioSource extends RTCAudioSource {
     super()
     this.ps = null
     this.cache = Buffer.alloc(0)
-    this.stopped = false
+    this.stopped = true
+  }
+
+  createTrack () {
+    const track = super.createTrack()
+    if (this.stopped) {
+      this.start()
+    }
+    return track
   }
 
   async start () {
